@@ -1,0 +1,125 @@
+<!-- 验证插件 -->
+<script src="/static/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="/static/plugins/jquery-validation/localization/messages_zh.min.js"></script>
+<!-- 针对当前主题进行简单封装，精简代码 -->
+<script src="/static/sdtheme/scripts/sdvalidate.js"></script>
+<!-- 时间区域选择插件 -->
+<script src="/static/plugins/moment-v2.22.1/moment.min.js"></script>
+<script src="/static/plugins/daterangepicker-v3.0.5/daterangepicker.js"></script>
+<!-- 针对当前主题进行简单封装，精简代码 -->
+<script src="/static/sdtheme/scripts/sddaterangepicker.js"></script>
+<script>
+  var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+  var doAfterSubmit = 0
+   $(function () {
+       $("#ExeType").selectpicker('val','{{.m.ExeType}}');
+       $("#ConMethod").selectpicker('val','{{.m.ConMethod}}');
+       $("#StartTime").sddaterangepicker({ singleDatePicker: true }) //时间选择插件初始化
+        if(~~($("#Id").val())>0){
+          $("#saveAndgoon").hide()
+          $("#pageSmallTitle").text("编辑任务")
+        }
+        //验证
+        validateInfo();
+    })
+    //表单验证及AJAX提交
+    function validateInfo() {
+        var $thisForm = $('#thisForm');
+        $thisForm.sdvalidate({
+            rules: {
+                Name: {
+                    required: true
+                },
+                ScanTarget: {
+                    required: true
+                },
+                ExeType: {
+                    required: true
+                },
+                Type: {
+                    required: true
+                },
+                Account:{
+                    required: true
+                },
+                ConMethod: {
+                    required: true
+                },
+                Password: {
+                    required: true
+                },
+                Port: {
+                    required: true
+                },
+            },
+            messages: {},
+            submitHandler: function () {
+              var url ='{{ urlfor "TaskController.Edit"}}'
+              var data = $thisForm.serialize();
+              console.log("数据为：", data)
+              $.sdpost(url,data,function(re){
+                if(re.code === 0){
+                  layer.msg(re.msg)
+                  if(doAfterSubmit === 1){
+                    doAfterSubmit = 0
+                  }else{
+                    returnList(re.obj)
+                  }
+                }else{
+                  layer.alert(re.msg,{icon:2,title:'失败'})
+                }
+              });
+              return false;
+            }
+        });
+    }
+    // 分类下拉数据初始化
+    $(function() {
+        $.ajax({
+            url : '{{ urlfor "TemplateController.TypeOption"}}',
+            type : 'get',
+            dataType : 'json',
+            success : function(data) {//返回list数据并循环获取
+                var select = $("#TypeRelId");
+                for (var i = 0; i < data.rows.length; i++) {
+                    select.append("<option value='"+data.rows[i].TypeId+"'>"
+                        + data.rows[i].PropertyTypeDetail + "</option>");
+                }
+                $('.selectpicker').selectpicker('val', '');
+                $('.selectpicker').selectpicker('refresh');
+                $('#TypeRelId').selectpicker();
+                $("#TypeRelId").selectpicker('val','{{.m.TypeRelId}}');
+                GetStrategy()
+            }
+        });
+    });
+    // 获取检查策略下拉列表
+    function GetStrategy(){
+        var Id = $("#TypeRelId").selectpicker('val')
+        $.ajax({
+            url : '{{ urlfor "TemplateController.TemplateOption"}}' + '/' + Id,
+            type : 'get',
+            dataType : 'json',
+            success : function(data) {//返回list数据并循环获取
+                $("#TemplateRelId").empty();
+                var select = $("#TemplateRelId");
+                for (var i = 0; i < data.rows.length; i++) {
+                    select.append("<option value='"+data.rows[i].Id+"'>"
+                        + data.rows[i].TemplateName + "</option>");
+                }
+                $('.selectpicker').selectpicker('val', '');
+                $('.selectpicker').selectpicker('refresh');
+            }
+        });
+    }
+    function formSubmit() {
+      $("#thisForm").submit();		
+    }
+    function returnList(id){  
+      if(!id){
+        id = ~~($('#Id').val())
+      }     
+      var url = '{{ urlfor "TaskController.Index"}}' + '?hlpk=' + id;
+      window.location.href = url      
+    }    
+</script>

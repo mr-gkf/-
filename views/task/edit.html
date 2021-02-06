@@ -1,0 +1,122 @@
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+      任务管理
+      <small id="pageSmallTitle">添加任务</small>
+  </h1>
+  <ol class="breadcrumb">
+      <li>
+          <a href="{{urlfor "TaskController.Index"}}">
+              <i class="fa fa-dashboard"></i> 首页</a>
+      </li>
+      <li class="active">任务管理</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content container-fluid">
+    <!-- 页面内容开始 -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+              <h3 class="box-title">任务基本信息</h3>
+          </div>
+          <div class="box-body">
+            <!-- form start -->
+            <form class="form-horizontal margin-top-20" id="thisForm">
+                <input type="hidden" Name="Id" id="Id" value="{{.m.Id}}">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 任务名称</label>
+                    <div class="col-sm-8">
+                        <input type="text" autocomplete="off" name="Name" class="form-control" placeholder='1-20位字符(支持数字、字母、中文、下划线和".")' value="{{.m.Name}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 类型</label>
+                    <div class="col-sm-8">
+                        <select id="TypeRelId" name="TypeRelId" required onchange="GetStrategy()" class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 检查策略</label>
+                    <div class="col-sm-8">
+                        <select id="TemplateRelId" required name="TemplateRelId" class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><em style="color: red;">*</em> 扫描目标</label>
+                  <div class="col-sm-8">
+                      <input type="text" autocomplete="off" name="ScanTarget" class="form-control" placeholder="扫描目标" value="{{.m.ScanTarget}}">
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 执行类型</label>
+                    <div class="col-sm-8">
+                        <select name="ExeType" id="ExeType" class="form-control bs-select">
+                            <option value="0">立即执行</option>
+                            <option value="1">定期执行</option>
+                            <option value="2">周期性执行</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">开始时间</label>
+                    <div class="col-sm-8">
+                        <input type="text" value ='{{.m.StartTime}}' name="StartTime" id="StartTime" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 用户名</label>
+                    <div class="col-sm-8">
+                        <input type="text" autocomplete="off" name="Account" class="form-control" placeholder="登陆用户名" value="{{.m.Account}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 密码</label>
+                    <div class="col-sm-8">
+                        <input type="text" autocomplete="off"  name="Password" oninput = "value=value.replace(/[^\d]/g,'')" class="form-control" value="{{.m.Password}}" placeholder="登陆密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 连接方式</label>
+                    <div class="col-sm-8">
+                        <select name="ConMethod" id="ConMethod" class="form-control bs-select">
+                            <option value="0">telent</option>
+                            <option value="1">ssh</option>
+                            <option value="2">smb</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label"><em style="color: red;">*</em> 端口号</label>
+                    <div class="col-sm-8">
+                        <input type="text" autocomplete="off" name="Port" class="form-control" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="端口号" value="{{.m.Port}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">超级权限登录账户</label>
+                    <div class="col-sm-8">
+                        <input type="text" autocomplete="off" name="SuperAccount" class="form-control" placeholder="超级权限登录账户" value="{{.m.SuperAccount}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">超级权限登录密码</label>
+                    <div class="col-sm-8">
+                        <input type="text" autocomplete="off" name="SuperPassword" oninput = "value=value.replace(/[^\d]/g,'')" class="form-control" placeholder="超级权限登录密码" value="{{.m.SuperPassword}}">
+                    </div>
+                </div>
+            </form>
+            <!-- form end -->
+          </div>
+          <div class="box-footer align-center">
+            <button type="button" class="btn btn-primary" onclick="formSubmit()">提交</button>
+            <button type="button" class="btn btn-default" onclick="returnList()">返回</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 页面内容结束 -->
+  </section>
+  <!-- /.content -->
